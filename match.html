@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Matchning – Forntida Egypten</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+  <header class="site-header small">
+    <h1>Matchning</h1>
+    <nav><a class="link" href="index.html">← Till framsidan</a></nav>
+  </header>
+
+  <main class="container">
+    <p class="intro">Dra varje händelse-kort till rätt epok. När du placerar rätt får du en fördjupning.</p>
+    <div class="boards">
+      <section class="events">
+        <h2>Händelser</h2>
+        <div id="event-pool" class="pool" aria-label="Händelser att dra"></div>
+      </section>
+      <section class="targets">
+        <h2>Epoker</h2>
+        <div class="target-col">
+          <h3>Gamla riket</h3>
+          <div class="dropzone" data-epoch="old"></div>
+        </div>
+        <div class="target-col">
+          <h3>Mellersta riket</h3>
+          <div class="dropzone" data-epoch="middle"></div>
+        </div>
+        <div class="target-col">
+          <h3>Nya riket</h3>
+          <div class="dropzone" data-epoch="new"></div>
+        </div>
+      </section>
+    </div>
+    <div id="detail" class="detail" aria-live="polite"></div>
+  </main>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/match.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tidslinje – Forntida Egypten</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+  <header class="site-header small">
+    <h1>Tidslinje</h1>
+    <nav><a class="link" href="index.html">← Till framsidan</a></nav>
+  </header>
+
+  <main class="container">
+    <p class="intro">Dra och släpp händelser till rätt plats i tiden. Rätt placering visar en förklaring.</p>
+
+    <div class="timeline-wrapper">
+      <div class="timeline-scale" id="timeline-scale" aria-label="Tidslinje från 2700 f.v.t. till 1000 f.v.t."></div>
+      <div class="timeline-droparea" id="timeline-droparea"></div>
+    </div>
+
+    <section class="event-bank">
+      <h2>Händelser</h2>
+      <div id="timeline-event-pool" class="pool"></div>
+    </section>
+
+    <div id="timeline-detail" class="detail" aria-live="polite"></div>
+  </main>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/timeline.js"></script>
+</body>
+</html>

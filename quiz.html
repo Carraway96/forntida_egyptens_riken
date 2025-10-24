@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz – Forntida Egypten</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+  <header class="site-header small">
+    <h1>Flervalsfrågor</h1>
+    <nav><a class="link" href="index.html">← Till framsidan</a></nav>
+  </header>
+
+  <main class="container">
+    <div id="quiz" class="quiz-box">
+      <div id="question" class="question"></div>
+      <div id="options" class="options"></div>
+      <button id="next" class="btn" disabled>Nästa</button>
+      <div id="quiz-detail" class="detail" aria-live="polite"></div>
+      <div id="progress" class="progress"></div>
+    </div>
+  </main>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/quiz.js"></script>
+</body>
+</html>
