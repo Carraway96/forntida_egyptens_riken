@@ -1,5 +1,5 @@
 
-// Enkel drag & drop-matchning
+// Drag & drop-matchning (tydlig feedback)
 function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
 
 const pool = document.getElementById('event-pool');
@@ -8,21 +8,15 @@ const dropzones = document.querySelectorAll('.dropzone');
 
 const items = shuffle(EGYPT.matches);
 
-items.forEach((item, idx)=>{
+items.forEach((item)=>{
   const chip = document.createElement('div');
   chip.className = 'card-chip';
   chip.textContent = item.text;
   chip.setAttribute('draggable','true');
   chip.setAttribute('tabindex','0');
-  chip.dataset.epoch = item.epoch;
-  chip.dataset.index = idx.toString();
+  chip.dataset.epochs = JSON.stringify(item.epochs);
   chip.addEventListener('dragstart', e=>{
     e.dataTransfer.setData('text/plain', JSON.stringify(item));
-  });
-  chip.addEventListener('keydown', e=>{
-    if(e.key==='Enter'){
-      chip.classList.toggle('selected');
-    }
   });
   pool.appendChild(chip);
 });
@@ -37,30 +31,31 @@ dropzones.forEach(zone=>{
     e.preventDefault();
     zone.classList.remove('highlight');
     const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-    const correct = zone.dataset.epoch === data.epoch;
-    if(correct){
+    const ok = (data.epochs || []).includes(zone.dataset.epoch);
+    if(ok){
       const placed = document.createElement('div');
-      placed.className = 'card-chip';
+      placed.className = 'card-chip correct';
       placed.textContent = data.text;
-      placed.classList.add('correct');
-      placed.setAttribute('aria-label', data.text + ' placerad korrekt');
       zone.appendChild(placed);
 
-      // ta bort originalchip
+      // remove from pool
       const original = [...pool.children].find(c=>c.textContent===data.text);
       if(original) original.remove();
 
-      showDetail(data);
+      showDetail(data, zone.dataset.epoch);
     } else {
       zone.classList.add('wrong');
       setTimeout(()=>zone.classList.remove('wrong'), 600);
+      detail.innerHTML = `<h3>Inte riktigt.</h3>
+        <p>Det här kortet hör inte främst till <strong>${EGYPT.epochs[zone.dataset.epoch].name}</strong>. Prova en annan epok.</p>`;
+      detail.classList.add('show');
     }
   });
 });
 
-function showDetail(data){
+function showDetail(data, epoch){
   detail.innerHTML = `<h3>Rätt!</h3>
     <p>${data.explain}</p>
-    <p><em>Koppling till epoken:</em> ${EGYPT.epochs[data.epoch].summary}</p>`;
+    <p><em>Koppling till epoken:</em> ${EGYPT.epochs[epoch].summary}</p>`;
   detail.classList.add('show');
 }

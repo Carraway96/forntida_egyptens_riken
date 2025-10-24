@@ -1,47 +1,38 @@
 
-// Tidslinje: skala från -2700 till -1000
 const scale = document.getElementById('timeline-scale');
-const droparea = document.getElementById('timeline-droparea');
 const pool = document.getElementById('timeline-event-pool');
 const detailBox = document.getElementById('timeline-detail');
 
-const MIN = -2700, MAX = -1000;
-const WIDTH = scale.clientWidth || 800;
-
-function yearToPercent(y){
-  return ((y - MIN) / (MAX - MIN)) * 100;
-}
-
 function drawScale(){
+  const ticks = [
+    {y:-2700, label:'Gamla riket start'},
+    {y:-2200, label:'Gamla riket slut'},
+    {y:-2050, label:'Mellersta riket start'},
+    {y:-1650, label:'Mellersta riket slut'},
+    {y:-1550, label:'Nya riket start'},
+    {y:-1070, label:'Nya riket slut'}
+  ];
+  const min = -2700, max = -1070;
   scale.innerHTML = '';
-  const ticks = [-2700,-2500,-2300,-2100,-1900,-1700,-1500,-1300,-1100,-1000];
-  ticks.forEach(y=>{
-    const t = document.createElement('div');
-    t.className = 'tick';
-    t.style.left = yearToPercent(y) + '%';
-    scale.appendChild(t);
+  ticks.forEach(t=>{
+    const pos = ((t.y - min)/(max - min))*100;
+    const tick = document.createElement('div');
+    tick.className = 'tick';
+    tick.style.left = pos + '%';
+    scale.appendChild(tick);
 
-    const label = document.createElement('div');
-    label.className = 'tick-label';
-    label.style.left = `calc(${yearToPercent(y)}% - 18px)`;
-    label.textContent = Math.abs(y) + ' f.v.t.';
-    scale.appendChild(label);
+    const lbl = document.createElement('div');
+    lbl.className = 'tick-label';
+    lbl.style.left = pos + '%';
+    lbl.textContent = Math.abs(t.y) + ' f.v.t.';
+    scale.appendChild(lbl);
   });
 }
 drawScale();
 
-// skapa drop spots för varje event
-EGYPT.timeline.forEach((ev, i)=>{
-  const spot = document.createElement('div');
-  spot.className = 'timeline-spot';
-  spot.style.left = `calc(${yearToPercent(ev.year)}% - 90px)`;
-  spot.style.top = ( (i%3)*85 ) + 'px';
-  spot.dataset.year = ev.year;
-  droparea.appendChild(spot);
-});
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
 
-// skapa kort i banken
-EGYPT.timeline.forEach((ev)=>{
+shuffle(EGYPT.timelineCards).forEach(ev=>{
   const card = document.createElement('div');
   card.className = 'timeline-card';
   card.textContent = ev.label;
@@ -52,27 +43,27 @@ EGYPT.timeline.forEach((ev)=>{
   pool.appendChild(card);
 });
 
-// droplogik
-droparea.querySelectorAll('.timeline-spot').forEach(spot=>{
-  spot.addEventListener('dragover', e=>{ e.preventDefault(); });
-  spot.addEventListener('drop', e=>{
+document.querySelectorAll('.epoch-drop').forEach(drop=>{
+  drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('highlight'); });
+  drop.addEventListener('dragleave', ()=> drop.classList.remove('highlight'));
+  drop.addEventListener('drop', e=>{
     e.preventDefault();
+    drop.classList.remove('highlight');
     const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-    const targetYear = parseInt(spot.dataset.year,10);
-    // rätt om inom ±40 år (pedagogisk tolerans)
-    if(Math.abs(data.year - targetYear) <= 40){
-      spot.innerHTML = '';
+    const ok = (data.epochs || []).includes(drop.dataset.epoch);
+    if(ok){
       const placed = document.createElement('div');
-      placed.className = 'timeline-card correct';
+      placed.className = 'card-chip correct';
       placed.textContent = data.label;
-      spot.appendChild(placed);
-      detailBox.innerHTML = `<h3>Rätt plats!</h3><p>${data.explain}</p>`;
-      detailBox.classList.add('show');
-      // Ta bort från banken
+      drop.appendChild(placed);
       const card = [...pool.children].find(c=>c.textContent===data.label);
       if(card) card.remove();
+      detailBox.innerHTML = `<h3>Rätt!</h3><p>${data.explain}</p>`;
+      detailBox.classList.add('show');
     } else {
-      detailBox.innerHTML = `<h3>Nästan!</h3><p>Försök flytta händelsen närmare rätt tid. Tänk på epokernas ordning.</p>`;
+      drop.classList.add('wrong');
+      setTimeout(()=>drop.classList.remove('wrong'), 500);
+      detailBox.innerHTML = `<h3>Inte riktigt.</h3><p>Den här händelsen hör inte främst till <strong>${EGYPT.epochs[drop.dataset.epoch].name}</strong>. Försök en annan epok.</p>`;
       detailBox.classList.add('show');
     }
   });

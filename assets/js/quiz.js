@@ -30,7 +30,7 @@ render();
 
 function select(i, q){
   const options = [...optBox.children];
-  options.forEach(el=>el.disabled = true);
+  options.forEach(el=>{ el.disabled = true; el.style.cursor='default'; });
   if(i === q.answer){
     options[i].classList.add('correct');
     detail.innerHTML = `<h3>Rätt!</h3><p>${q.detail}</p>`;
